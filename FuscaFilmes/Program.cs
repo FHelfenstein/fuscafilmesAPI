@@ -6,6 +6,8 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+// Aqui criar um banco de dados do zero
 //using (var context = new Context()) 
 //{ 
 //    context.Database.EnsureCreated();

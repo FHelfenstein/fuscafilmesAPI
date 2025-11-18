@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 
+// criar contexto
 
 namespace FuscaFilmes.API.DbContexts {
     public class Context(DbContextOptions<Context> options) : DbContext(options) 

@@ -1,4 +1,7 @@
 ﻿namespace FuscaFilmes.API.Entities {
+
+    // classe filme
+
     public class Filme {
         public int Id { get; set; }
         public required string Titulo { get; set; }
