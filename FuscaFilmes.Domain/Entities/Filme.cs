@@ -1,4 +1,4 @@
-﻿namespace FuscaFilmes.API.Entities {
+﻿namespace FuscaFilmes.Domain.Entities {
 
     // classe filme
 
