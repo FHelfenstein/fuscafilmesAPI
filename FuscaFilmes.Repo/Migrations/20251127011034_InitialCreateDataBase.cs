@@ -7,7 +7,7 @@
 namespace FuscaFilmes.Repo.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreation : Migration
+    public partial class InitialCreateDataBase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -32,16 +32,33 @@ namespace FuscaFilmes.Repo.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Titulo = table.Column<string>(type: "TEXT", nullable: false),
-                    Ano = table.Column<int>(type: "INTEGER", nullable: false),
-                    DiretorId = table.Column<int>(type: "INTEGER", nullable: false)
+                    Ano = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Filmes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DiretorFilme",
+                columns: table => new
+                {
+                    DiretoresId = table.Column<int>(type: "INTEGER", nullable: false),
+                    FilmesId = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DiretorFilme", x => new { x.DiretoresId, x.FilmesId });
                     table.ForeignKey(
-                        name: "FK_Filmes_Diretores_DiretorId",
-                        column: x => x.DiretorId,
+                        name: "FK_DiretorFilme_Diretores_DiretoresId",
+                        column: x => x.DiretoresId,
                         principalTable: "Diretores",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DiretorFilme_Filmes_FilmesId",
+                        column: x => x.FilmesId,
+                        principalTable: "Filmes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -60,35 +77,38 @@ namespace FuscaFilmes.Repo.Migrations
 
             migrationBuilder.InsertData(
                 table: "Filmes",
-                columns: new[] { "Id", "Ano", "DiretorId", "Titulo" },
+                columns: new[] { "Id", "Ano", "Titulo" },
                 values: new object[,]
                 {
-                    { 1, 2010, 1, "Inception" },
-                    { 2, 2014, 1, "Interstellar" },
-                    { 3, 1993, 2, "Jurassic Park" },
-                    { 4, 1982, 2, "E.T. the Extra-Terrestrial" },
-                    { 5, 1994, 3, "Pulp Fiction" },
-                    { 6, 2003, 3, "Kill Bill: Volume 1" },
-                    { 7, 2013, 4, "The Wolf of Wall Street" },
-                    { 8, 2010, 4, "Shutter Island" },
-                    { 9, 1997, 5, "Titanic" },
-                    { 10, 2009, 5, "Avatar" }
+                    { 1, 2010, "Inception" },
+                    { 2, 2014, "Interstellar" },
+                    { 3, 1993, "Jurassic Park" },
+                    { 4, 1982, "E.T. the Extra-Terrestrial" },
+                    { 5, 1994, "Pulp Fiction" },
+                    { 6, 2003, "Kill Bill: Volume 1" },
+                    { 7, 2013, "The Wolf of Wall Street" },
+                    { 8, 2010, "Shutter Island" },
+                    { 9, 1997, "Titanic" },
+                    { 10, 2009, "Avatar" }
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Filmes_DiretorId",
-                table: "Filmes",
-                column: "DiretorId");
+                name: "IX_DiretorFilme_FilmesId",
+                table: "DiretorFilme",
+                column: "FilmesId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Filmes");
+                name: "DiretorFilme");
 
             migrationBuilder.DropTable(
                 name: "Diretores");
+
+            migrationBuilder.DropTable(
+                name: "Filmes");
         }
     }
 }

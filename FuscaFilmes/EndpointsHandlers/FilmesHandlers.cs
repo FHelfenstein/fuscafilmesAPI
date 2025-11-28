@@ -8,25 +8,33 @@ namespace FuscaFilmes.API.EndpointsHandlers {
 
         public static List<Filme> GetFilmes(Context context) {
 
-            return context.Filmes.Include(x => x.Diretor).OrderByDescending(x => x.Ano).ThenBy(x => x.Titulo).ToList();
+            return context.Filmes
+                .Include(x => x.Diretores)
+                .OrderByDescending(x => x.Ano)
+                .ThenBy(x => x.Titulo).ToList();
         }
 
         public static List<Filme> GetFilmesById(int id, Context context) {
 
-            return context.Filmes.Where(x => x.Id == id).Include(x => x.Diretor).ToList();
+            return context.Filmes.Where(x => x.Id == id)
+                .Include(x => x.Diretores)
+                .ToList();
         }
 
         public static List<Filme> GetFilmesEFFunctionsByName(string titulo, Context context) {
 
             return context.Filmes.Where(x =>
                 EF.Functions.Like(x.Titulo, $"%{titulo}%")
-             ).Include(x => x.Diretor)
+             )
+             .Include(x => x.Diretores)
             .ToList();
         }
 
         public static List<Filme> GetFilmesContainsByName(string titulo, Context context) {
 
-            return context.Filmes.Where(x => x.Titulo.ToLower().Contains(titulo)).Include(x => x.Diretor).ToList();
+            return context.Filmes.Where(x => x.Titulo.ToLower().Contains(titulo))
+                .Include(x => x.Diretores)
+                .ToList();
         }
 
         public static IResult UpdateFilme(Context context, FilmeUpdate filmeUpdate) {

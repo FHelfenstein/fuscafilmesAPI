@@ -12,18 +12,24 @@ public class DiretorRepository(Context _context) : IDiretorRepository {
 
     public IEnumerable<Diretor> GetDiretores() {
 
-        return Context.Diretores.Include(x => x.Filmes).ToList();
+        return Context.Diretores
+            .Include(x => x.Filmes)
+            .ToList();
     }
 
     public Diretor GetDiretorByName(string name) {
 
-        return Context.Diretores.Include(x => x.Filmes).FirstOrDefault(x => x.Name.Contains(name))
+        return Context.Diretores
+            .Include(x => x.Filmes)
+            .FirstOrDefault(x => x.Name.Contains(name))
             ?? new Diretor { Id = 99999, Name = "INEXISTENTE" }; // Quando não satisfaz a condição do First ai implementamos o Default aqui estamos criando um novo diretor 
     }
 
     public IEnumerable<Diretor> GetDiretoresById(int id) {
 
-        return Context.Diretores.Where(x => x.Id == id).Include(x => x.Filmes).ToList();
+        return Context.Diretores.Where(x => x.Id == id)
+            .Include(x => x.Filmes)
+            .ToList();
     }
 
     public void Add(Diretor diretor) {
