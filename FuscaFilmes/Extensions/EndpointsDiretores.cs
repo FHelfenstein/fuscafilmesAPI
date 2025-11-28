@@ -5,22 +5,22 @@ namespace FuscaFilmes.API.Extensions {
 
         public static void DiretoresEndPoints(this IEndpointRouteBuilder app) {
 
-            app.MapGet("/diretores", DiretoresHandlers.GetDiretores)
+            app.MapGet("/diretores", DiretoresHandlers.GetDiretoresAsync)
             .WithOpenApi();
 
-            app.MapGet("/diretores/aggregate/{name}", DiretoresHandlers.GetDiretoresByName)
+            app.MapGet("/diretores/aggregate/{name}", DiretoresHandlers.GetDiretoresByNameAsync)
             .WithOpenApi();
 
-            app.MapGet("/diretores/where/{id}", DiretoresHandlers.GetDiretoresById)
+            app.MapGet("/diretores/where/{id}", DiretoresHandlers.GetDiretoresByIdAsync)
             .WithOpenApi();
 
-            app.MapPost("/diretores", DiretoresHandlers.AddDiretor)
+            app.MapPost("/diretores", DiretoresHandlers.AddDiretorAsync)
             .WithOpenApi();
 
-            app.MapPut("/diretores", DiretoresHandlers.UpdateDiretor)
+            app.MapPut("/diretores", DiretoresHandlers.UpdateDiretorAsync)
             .WithOpenApi();
 
-            app.MapDelete("/diretores/{diretorId}", DiretoresHandlers.DeleteDiretor)
+            app.MapDelete("/diretores/{diretorId}", DiretoresHandlers.DeleteDiretorAsync)
             .WithOpenApi();
 
         }

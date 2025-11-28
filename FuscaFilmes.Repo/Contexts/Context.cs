@@ -11,74 +11,93 @@ namespace FuscaFilmes.Repo.Contexts {
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
 
+            modelBuilder.Entity<Filme>(
+                f => 
+                {
+                    f.Property(x => x.Orcamento).HasColumnType("decimal(18,2)");
 
-            // Relacionamento Muitos para Muitos
-            modelBuilder.Entity<Diretor>()
-                .HasMany(d => d.Filmes)
-                .WithMany(f => f.Diretores)
-                .UsingEntity<DiretorFilme>(
-                    df => df.HasOne<Filme>(e => e.Filme)
+                    f.Property(x => x.Titulo).HasMaxLength(100).IsRequired();
+
+                    // Dado de filme para inicialização no banco de dados
+                    f.HasData(
+                            // Filmes de Christopher Nolan
+                            new Filme { Id = 1, Titulo = "Inception", Ano = 2010 },
+                            new Filme { Id = 2, Titulo = "Interstellar", Ano = 2014 },
+                            new Filme { Id = 3, Titulo = "The Dark Knight", Ano = 2008 },
+
+                            // Filmes de Steven Spielberg
+                            new Filme { Id = 4, Titulo = "Jurassic Park", Ano = 1993 },
+                            new Filme { Id = 5, Titulo = "E.T. the Extra-Terrestrial", Ano = 1982 },
+                            new Filme { Id = 6, Titulo = "Schindler's List", Ano = 1993 },
+
+                            // Filmes de Quentin Tarantino
+                            new Filme { Id = 7, Titulo = "Pulp Fiction", Ano = 1994 },
+                            new Filme { Id = 8, Titulo = "Kill Bill: Vol. 1", Ano = 2003 },
+                            new Filme { Id = 9, Titulo = "Django Unchained", Ano = 2012 },
+
+                            // Filmes de Martin Scorsese
+                            new Filme { Id = 10, Titulo = "Goodfellas", Ano = 1990 },
+                            new Filme { Id = 11, Titulo = "The Irishman", Ano = 2019 },
+                            new Filme { Id = 12, Titulo = "Taxi Driver", Ano = 1976 },
+
+                            // Filmes de James Cameron
+                            new Filme { Id = 13, Titulo = "Avatar", Ano = 2009 },
+                            new Filme { Id = 14, Titulo = "Titanic", Ano = 1997 },
+                            new Filme { Id = 15, Titulo = "The Terminator", Ano = 1984 },
+
+                            // Filmes de Greta Gerwig
+                            new Filme { Id = 16, Titulo = "Lady Bird", Ano = 2017 },
+                            new Filme { Id = 17, Titulo = "Little Women", Ano = 2019 },
+                            new Filme { Id = 18, Titulo = "Barbie", Ano = 2023 }
+                        );
+                }
+            );
+            
+            modelBuilder.Entity<Diretor>(
+                d => {
+
+                    // Alterando o nome da coluna da chave estrangeira
+                    d.Property(x => x.Id).HasColumnName("id_diretor");
+
+                    // Relacionamento muitos para muitos
+                    d.HasMany(d => d.Filmes)
+                    .WithMany(f => f.Diretores)
+                    .UsingEntity<DiretorFilme>(
+                        df => df.HasOne<Filme>(e => e.Filme)
                             .WithMany(e => e.DiretoresFilmes),
-                    df => df.HasOne<Diretor>(e => e.Diretor)
+                        df => df.HasOne<Diretor>(e => e.Diretor)
                             .WithMany(e => e.DiretoresFilmes)
                     );
 
-            // Relacionamento Um para Um
-            modelBuilder.Entity<Diretor>()
-                .HasOne(d => d.DiretorDetalhe)
-                .WithOne(d => d.Diretor)
-                .HasForeignKey<DiretorDetalhe>(dd => dd.DiretorId);
+                    // Relacionamento Um para Um
+                    d.HasOne(d => d.DiretorDetalhe).WithOne(d => d.Diretor).HasForeignKey<DiretorDetalhe>(dd => dd.DiretorId);
 
-
-            modelBuilder.Entity<Diretor>().HasData(
-                new Diretor { Id = 1, Name = "Christopher Nolan" },
-                new Diretor { Id = 2, Name = "Steven Spielberg" },
-                new Diretor { Id = 3, Name = "Quentin Tarantino" },
-                new Diretor { Id = 4, Name = "Martin Scorsese" },
-                new Diretor { Id = 5, Name = "James Cameron" },
-                new Diretor { Id = 6, Name = "Greta Gerwig" }
+                    // Dados de diretor para inicialização no banco de dados
+                    d.HasData(
+                        new Diretor { Id = 1, Name = "Christopher Nolan" },
+                        new Diretor { Id = 2, Name = "Steven Spielberg" },
+                        new Diretor { Id = 3, Name = "Quentin Tarantino" },
+                        new Diretor { Id = 4, Name = "Martin Scorsese" },
+                        new Diretor { Id = 5, Name = "James Cameron" },
+                        new Diretor { Id = 6, Name = "Greta Gerwig" }
+                    );
+                }
             );
 
-            modelBuilder.Entity<DiretorDetalhe>().HasData(
-                new DiretorDetalhe { Id = 1, DiretorId = 1, Biografia= "Biografia do diretor Christopher Nolan", DataNascimento = new DateTime(1970,03,28)},
-                new DiretorDetalhe { Id = 2, DiretorId = 2, Biografia = "Biografia do diretor Steven Spielberg", DataNascimento = new DateTime(1952, 02, 13) },
-                new DiretorDetalhe { Id = 3, DiretorId = 3, Biografia = "Biografia do Quentin Tarantino", DataNascimento = new DateTime(1950, 08, 22) },
-                new DiretorDetalhe { Id = 4, DiretorId = 4, Biografia = "Biografia do diretor Martin Scorsese", DataNascimento = new DateTime(1968, 10, 15) }
 
+            modelBuilder.Entity<DiretorDetalhe>(
+                dd => {
+                    //dd.Property(dd => dd.DataCriacao).HasDefaultValueSql("GETDATE()");
+
+                    dd.HasData(
+                        new DiretorDetalhe { Id = 1, DiretorId = 1, Biografia = "Biografia do diretor Christopher Nolan", DataNascimento = new DateTime(1970, 03, 28) },
+                        new DiretorDetalhe { Id = 2, DiretorId = 2, Biografia = "Biografia do diretor Steven Spielberg", DataNascimento = new DateTime(1952, 02, 13) },
+                        new DiretorDetalhe { Id = 3, DiretorId = 3, Biografia = "Biografia do Quentin Tarantino", DataNascimento = new DateTime(1950, 08, 22) },
+                        new DiretorDetalhe { Id = 4, DiretorId = 4, Biografia = "Biografia do diretor Martin Scorsese", DataNascimento = new DateTime(1968, 10, 15) }
+                    );
+                }
             );
-
-            modelBuilder.Entity<Filme>().HasData(
-                // Filmes de Christopher Nolan
-                new Filme { Id = 1, Titulo = "Inception", Ano = 2010 },
-                new Filme { Id = 2, Titulo = "Interstellar", Ano = 2014 },
-                new Filme { Id = 3, Titulo = "The Dark Knight", Ano = 2008 },
-
-                // Filmes de Steven Spielberg
-                new Filme { Id = 4, Titulo = "Jurassic Park", Ano = 1993 },
-                new Filme { Id = 5, Titulo = "E.T. the Extra-Terrestrial", Ano = 1982 },
-                new Filme { Id = 6, Titulo = "Schindler's List", Ano = 1993 },
-
-                // Filmes de Quentin Tarantino
-                new Filme { Id = 7, Titulo = "Pulp Fiction", Ano = 1994 },
-                new Filme { Id = 8, Titulo = "Kill Bill: Vol. 1", Ano = 2003 },
-                new Filme { Id = 9, Titulo = "Django Unchained", Ano = 2012 },
-
-                // Filmes de Martin Scorsese
-                new Filme { Id = 10, Titulo = "Goodfellas", Ano = 1990 },
-                new Filme { Id = 11, Titulo = "The Irishman", Ano = 2019 },
-                new Filme { Id = 12, Titulo = "Taxi Driver", Ano = 1976 },
-
-                // Filmes de James Cameron
-                new Filme { Id = 13, Titulo = "Avatar", Ano = 2009 },
-                new Filme { Id = 14, Titulo = "Titanic", Ano = 1997 },
-                new Filme { Id = 15, Titulo = "The Terminator", Ano = 1984 },
-
-                // Filmes de Greta Gerwig
-                new Filme { Id = 16, Titulo = "Lady Bird", Ano = 2017 },
-                new Filme { Id = 17, Titulo = "Little Women", Ano = 2019 },
-                new Filme { Id = 18, Titulo = "Barbie", Ano = 2023 }
-            );
-
+                        
             modelBuilder.Entity<DiretorFilme>().HasData(
                 new { DiretorId = 1, FilmeId = 1 },
                 new { DiretorId = 1, FilmeId = 2 },
@@ -99,7 +118,6 @@ namespace FuscaFilmes.Repo.Contexts {
                 new { DiretorId = 6, FilmeId = 17 },
                 new { DiretorId = 6, FilmeId = 18 }
             );
-
         }
     }
 }

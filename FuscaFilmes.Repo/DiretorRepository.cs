@@ -10,45 +10,43 @@ public class DiretorRepository(Context _context) : IDiretorRepository {
     public Context Context { get; } = _context;
 
 
-    public IEnumerable<Diretor> GetDiretores() {
+    public async Task<IEnumerable<Diretor>> GetDiretoresAsync() {
 
-        return Context.Diretores
+        return await Context.Diretores
             .Include(x => x.Filmes)
-            .ToList();
+            .ToListAsync();
     }
 
-    public Diretor GetDiretorByName(string name) {
+    public async Task<Diretor> GetDiretorByNameAsync(string name) {
 
-        return Context.Diretores
+        return await Context.Diretores
             .Include(x => x.Filmes)
-            .FirstOrDefault(x => x.Name.Contains(name))
+            .FirstOrDefaultAsync(x => x.Name.Contains(name))
             ?? new Diretor { Id = 99999, Name = "INEXISTENTE" }; // Quando não satisfaz a condição do First ai implementamos o Default aqui estamos criando um novo diretor 
     }
 
-    public IEnumerable<Diretor> GetDiretoresById(int id) {
+    public async Task<IEnumerable<Diretor>> GetDiretoresByIdAsync(int id) {
 
-        return Context.Diretores.Where(x => x.Id == id)
+        return await Context.Diretores.Where(x => x.Id == id)
             .Include(x => x.Filmes)
-            .ToList();
+            .ToListAsync();
     }
 
-    public void Add(Diretor diretor) {
-        Context.Diretores.Add(diretor);
-        Context.SaveChanges();
-
+    public async Task AddAsync(Diretor diretor) {
+        await Context.Diretores.AddAsync(diretor);
     }
 
-    public void Delete(int diretorId) {
+    public async Task DeleteAsync(int diretorId) {
 
-        var diretor = Context.Diretores.Find(diretorId);
+        var diretor = await  Context.Diretores.FindAsync(diretorId);
 
         if (diretor != null)
             Context.Diretores.Remove(diretor);
     }
 
-    public void Update(Diretor diretorNovo) {
+    public async Task UpdateAsync(Diretor diretorNovo) {
 
-        var diretor = Context.Diretores.Find(diretorNovo.Id);
+        var diretor = await  Context.Diretores.FindAsync(diretorNovo.Id);
 
         if (diretor != null) {
             diretor.Name = diretorNovo.Name;
@@ -61,8 +59,9 @@ public class DiretorRepository(Context _context) : IDiretorRepository {
         }
     }
 
-    public bool SaveChanges() {
-        return Context.SaveChanges() > 0;
+    public async Task<bool> SaveChangesAsync() {
+        return await  Context.SaveChangesAsync() > 0;
 
     }
+
 }
